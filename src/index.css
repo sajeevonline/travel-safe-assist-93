@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -35,19 +36,12 @@
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -97,5 +91,24 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Mobile-specific styles */
+@layer utilities {
+  .mobile-safe-area {
+    @apply pb-safe pt-safe-offset-4;
+  }
+  
+  .mobile-container {
+    @apply max-w-sm mx-auto px-4;
+  }
+  
+  .travel-gradient {
+    background: linear-gradient(135deg, #14B8A6 0%, #0EA5E9 100%);
+  }
+  
+  .glass-effect {
+    @apply bg-white/20 backdrop-blur-sm border border-white/30;
   }
 }
