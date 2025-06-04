@@ -37,18 +37,35 @@ const ViewPolicy = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <MobileHeader 
-        title={t('policyDetails')} 
-        showBack={true}
-        rightContent={
-          <Button size="sm" className="bg-travel-teal hover:bg-travel-teal/90">
-            <Download className="w-4 h-4 mr-1" />
+      {/* Mobile Header - only show on mobile */}
+      <div className="lg:hidden">
+        <MobileHeader 
+          title={t('policyDetails')} 
+          showBack={true}
+          rightContent={
+            <Button size="sm" className="bg-travel-teal hover:bg-travel-teal/90">
+              <Download className="w-4 h-4 mr-1" />
+              {t('downloadPdf')}
+            </Button>
+          }
+        />
+      </div>
+
+      {/* Desktop Header */}
+      <div className="hidden lg:block lg:p-8 lg:pb-0">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">{t('policyDetails')}</h1>
+            <p className="text-gray-600 mt-2">View and manage your insurance policy details</p>
+          </div>
+          <Button className="bg-travel-teal hover:bg-travel-teal/90">
+            <Download className="w-4 h-4 mr-2" />
             {t('downloadPdf')}
           </Button>
-        }
-      />
+        </div>
+      </div>
 
-      <div className="p-4 space-y-6">
+      <div className="lg:p-8 p-4 space-y-6">
         {/* Policy Header */}
         <Card className="travel-gradient text-white">
           <CardContent className="p-6">

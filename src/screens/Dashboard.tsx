@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -16,8 +15,7 @@ import {
   HelpCircle,
   Users,
   Calendar,
-  Globe,
-  Menu
+  Globe
 } from 'lucide-react';
 
 const Dashboard = () => {
@@ -61,197 +59,156 @@ const Dashboard = () => {
         />
       </div>
 
-      {/* Desktop Layout */}
-      <div className="lg:flex min-h-screen">
-        {/* Desktop Sidebar */}
-        <div className="hidden lg:flex lg:flex-col lg:w-64 lg:bg-white lg:shadow-lg">
-          <div className="p-6 border-b">
-            <div className="flex items-center space-x-3">
-              <Globe className="w-8 h-8 text-travel-teal" />
+      {/* Main Content */}
+      <div className="lg:p-8 p-4">
+        <div className="max-w-7xl mx-auto space-y-6">
+          {/* Desktop Header */}
+          <div className="hidden lg:block">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('dashboard')}</h1>
+            <p className="text-gray-600">Welcome back, {user?.name}! Manage your travel insurance coverage.</p>
+          </div>
+
+          {/* Welcome Section */}
+          <div className="travel-gradient rounded-xl p-6 text-white lg:p-8">
+            <div className="flex items-center space-x-4 mb-6">
+              <Globe className="w-10 h-10 lg:w-12 lg:h-12" />
               <div>
-                <h1 className="text-xl font-bold text-gray-900">TravelCare</h1>
-                <p className="text-sm text-gray-600">Medical Insurance</p>
+                <h2 className="text-xl lg:text-2xl font-bold">{t('welcome')}, {user?.name}!</h2>
+                <p className="text-white/90 text-sm lg:text-base">Your health coverage abroad</p>
+              </div>
+            </div>
+            
+            <div className="bg-white/20 rounded-lg p-4 lg:p-6 backdrop-blur-sm">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-center">
+                <div>
+                  <p className="text-white/80 text-xs uppercase tracking-wide">Policy Active</p>
+                  <p className="text-lg font-semibold">{formatDate(user?.policyStartDate || '')}</p>
+                </div>
+                <div>
+                  <p className="text-white/80 text-xs uppercase tracking-wide">Valid Until</p>
+                  <p className="text-lg font-semibold">{formatDate(user?.policyEndDate || '')}</p>
+                </div>
+                <div className="hidden lg:block">
+                  <p className="text-white/80 text-xs uppercase tracking-wide">Policy Number</p>
+                  <p className="text-lg font-semibold">{user?.policyNumber}</p>
+                </div>
+                <div className="hidden lg:block">
+                  <p className="text-white/80 text-xs uppercase tracking-wide">Coverage Period</p>
+                  <p className="text-lg font-semibold">365 days</p>
+                </div>
               </div>
             </div>
           </div>
-          
-          <nav className="flex-1 p-4">
-            <div className="space-y-2">
+
+          {/* Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Policy Overview */}
+            <Card className="lg:col-span-2">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <FileText className="w-5 h-5 text-travel-teal" />
+                  <span>Policy Overview</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Policy Number</span>
+                      <span className="font-medium">{user?.policyNumber}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600 flex items-center">
+                        <Users className="w-4 h-4 mr-1" />
+                        {t('dependents')}
+                      </span>
+                      <span className="font-medium">{user?.dependents}</span>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600 flex items-center">
+                        <Calendar className="w-4 h-4 mr-1" />
+                        Coverage Period
+                      </span>
+                      <span className="font-medium">365 days</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Policy Type</span>
+                      <span className="font-medium">Individual + Family</span>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Emergency Contact */}
+            <Card className="border-red-200 bg-red-50">
+              <CardHeader>
+                <CardTitle className="text-red-800">Emergency Assistance</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                    <span className="text-red-600 font-bold text-xl">!</span>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-red-800">24/7 Support</h4>
+                    <p className="text-red-700 text-sm">+1-800-TRAVEL</p>
+                    <p className="text-red-600 text-xs mt-1">Always available worldwide</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Quick Actions - Mobile Only */}
+          <div className="lg:hidden">
+            <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
+            <div className="grid grid-cols-2 gap-4">
               {quickActions.map((action, index) => (
-                <button
+                <QuickActionCard
                   key={index}
+                  title={action.title}
+                  icon={action.icon}
                   onClick={() => navigate(action.path)}
-                  className="w-full flex items-center space-x-3 px-4 py-3 text-left rounded-lg hover:bg-travel-teal/10 transition-colors group"
-                >
-                  <action.icon className="w-5 h-5 text-gray-600 group-hover:text-travel-teal" />
-                  <span className="text-gray-700 group-hover:text-travel-teal">{action.title}</span>
-                </button>
+                />
               ))}
             </div>
-          </nav>
-
-          <div className="p-4 border-t">
-            <Button
-              variant="outline"
-              onClick={logout}
-              className="w-full"
-            >
-              {t('logout')}
-            </Button>
           </div>
-        </div>
 
-        {/* Main Content */}
-        <div className="flex-1 lg:p-8 p-4">
-          <div className="max-w-7xl mx-auto space-y-6">
-            {/* Desktop Header */}
-            <div className="hidden lg:block">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('dashboard')}</h1>
-              <p className="text-gray-600">Welcome back, {user?.name}! Manage your travel insurance coverage.</p>
-            </div>
-
-            {/* Welcome Section */}
-            <div className="travel-gradient rounded-xl p-6 text-white lg:p-8">
-              <div className="flex items-center space-x-4 mb-6">
-                <Globe className="w-10 h-10 lg:w-12 lg:h-12" />
-                <div>
-                  <h2 className="text-xl lg:text-2xl font-bold">{t('welcome')}, {user?.name}!</h2>
-                  <p className="text-white/90 text-sm lg:text-base">Your health coverage abroad</p>
-                </div>
-              </div>
-              
-              <div className="bg-white/20 rounded-lg p-4 lg:p-6 backdrop-blur-sm">
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-center">
-                  <div>
-                    <p className="text-white/80 text-xs uppercase tracking-wide">Policy Active</p>
-                    <p className="text-lg font-semibold">{formatDate(user?.policyStartDate || '')}</p>
-                  </div>
-                  <div>
-                    <p className="text-white/80 text-xs uppercase tracking-wide">Valid Until</p>
-                    <p className="text-lg font-semibold">{formatDate(user?.policyEndDate || '')}</p>
-                  </div>
-                  <div className="hidden lg:block">
-                    <p className="text-white/80 text-xs uppercase tracking-wide">Policy Number</p>
-                    <p className="text-lg font-semibold">{user?.policyNumber}</p>
-                  </div>
-                  <div className="hidden lg:block">
-                    <p className="text-white/80 text-xs uppercase tracking-wide">Coverage Period</p>
-                    <p className="text-lg font-semibold">365 days</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Policy Overview */}
-              <Card className="lg:col-span-2">
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
+          {/* Recent Activity - Desktop Only */}
+          <div className="hidden lg:block">
+            <Card>
+              <CardHeader>
+                <CardTitle>Recent Activity</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
                     <FileText className="w-5 h-5 text-travel-teal" />
-                    <span>Policy Overview</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600">Policy Number</span>
-                        <span className="font-medium">{user?.policyNumber}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600 flex items-center">
-                          <Users className="w-4 h-4 mr-1" />
-                          {t('dependents')}
-                        </span>
-                        <span className="font-medium">{user?.dependents}</span>
-                      </div>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600 flex items-center">
-                          <Calendar className="w-4 h-4 mr-1" />
-                          Coverage Period
-                        </span>
-                        <span className="font-medium">365 days</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600">Policy Type</span>
-                        <span className="font-medium">Individual + Family</span>
-                      </div>
+                    <div className="flex-1">
+                      <p className="font-medium">Policy Downloaded</p>
+                      <p className="text-sm text-gray-600">Yesterday at 2:30 PM</p>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-
-              {/* Emergency Contact */}
-              <Card className="border-red-200 bg-red-50">
-                <CardHeader>
-                  <CardTitle className="text-red-800">Emergency Assistance</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
-                      <span className="text-red-600 font-bold text-xl">!</span>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-red-800">24/7 Support</h4>
-                      <p className="text-red-700 text-sm">+1-800-TRAVEL</p>
-                      <p className="text-red-600 text-xs mt-1">Always available worldwide</p>
+                  <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                    <Search className="w-5 h-5 text-travel-teal" />
+                    <div className="flex-1">
+                      <p className="font-medium">Coverage Search: "Dental Emergency"</p>
+                      <p className="text-sm text-gray-600">2 days ago</p>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Quick Actions - Mobile Only */}
-            <div className="lg:hidden">
-              <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
-              <div className="grid grid-cols-2 gap-4">
-                {quickActions.map((action, index) => (
-                  <QuickActionCard
-                    key={index}
-                    title={action.title}
-                    icon={action.icon}
-                    onClick={() => navigate(action.path)}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Recent Activity - Desktop Only */}
-            <div className="hidden lg:block">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recent Activity</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                      <FileText className="w-5 h-5 text-travel-teal" />
-                      <div className="flex-1">
-                        <p className="font-medium">Policy Downloaded</p>
-                        <p className="text-sm text-gray-600">Yesterday at 2:30 PM</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                      <Search className="w-5 h-5 text-travel-teal" />
-                      <div className="flex-1">
-                        <p className="font-medium">Coverage Search: "Dental Emergency"</p>
-                        <p className="text-sm text-gray-600">2 days ago</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                      <MapPin className="w-5 h-5 text-travel-teal" />
-                      <div className="flex-1">
-                        <p className="font-medium">Provider Search in Paris</p>
-                        <p className="text-sm text-gray-600">1 week ago</p>
-                      </div>
+                  <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                    <MapPin className="w-5 h-5 text-travel-teal" />
+                    <div className="flex-1">
+                      <p className="font-medium">Provider Search in Paris</p>
+                      <p className="text-sm text-gray-600">1 week ago</p>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>

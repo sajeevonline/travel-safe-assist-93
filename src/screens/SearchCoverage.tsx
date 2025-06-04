@@ -73,9 +73,20 @@ const SearchCoverage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <MobileHeader title={t('searchCoverage')} showBack={true} />
+      {/* Mobile Header - only show on mobile */}
+      <div className="lg:hidden">
+        <MobileHeader title={t('searchCoverage')} showBack={true} />
+      </div>
 
-      <div className="p-4 space-y-6">
+      {/* Desktop Header */}
+      <div className="hidden lg:block lg:p-8 lg:pb-0">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">{t('searchCoverage')}</h1>
+          <p className="text-gray-600 mt-2">Search for coverage information and treatment details</p>
+        </div>
+      </div>
+
+      <div className="lg:p-8 p-4 space-y-6">
         {/* Search Bar */}
         <Card>
           <CardContent className="p-4">
