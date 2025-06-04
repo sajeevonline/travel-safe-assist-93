@@ -5,6 +5,7 @@ interface Language {
   code: string;
   name: string;
   flag: string;
+  direction: 'ltr' | 'rtl';
 }
 
 interface LanguageContextType {
@@ -15,12 +16,13 @@ interface LanguageContextType {
 }
 
 const languages: Language[] = [
-  { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'es', name: 'Español', flag: '🇪🇸' },
-  { code: 'fr', name: 'Français', flag: '🇫🇷' },
-  { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
-  { code: 'zh', name: '中文', flag: '🇨🇳' },
-  { code: 'ja', name: '日本語', flag: '🇯🇵' },
+  { code: 'en', name: 'English', flag: '🇺🇸', direction: 'ltr' },
+  { code: 'es', name: 'Español', flag: '🇪🇸', direction: 'ltr' },
+  { code: 'fr', name: 'Français', flag: '🇫🇷', direction: 'ltr' },
+  { code: 'de', name: 'Deutsch', flag: '🇩🇪', direction: 'ltr' },
+  { code: 'zh', name: '中文', flag: '🇨🇳', direction: 'ltr' },
+  { code: 'ja', name: '日本語', flag: '🇯🇵', direction: 'ltr' },
+  { code: 'ar', name: 'العربية', flag: '🇦🇪', direction: 'rtl' },
 ];
 
 const translations: Record<string, Record<string, string>> = {
@@ -54,6 +56,12 @@ const translations: Record<string, Record<string, string>> = {
     orderMedicine: 'Order Medicine',
     trackDelivery: 'Track Delivery',
     contactSupport: 'Contact Support',
+    currency: 'AED',
+    country: 'UAE',
+    emergencyNumber: '+971-800-TRAVEL',
+    hospitalName: 'Dubai Hospital',
+    clinicName: 'Abu Dhabi Medical Center',
+    doctorName: 'Dr. Ahmed Al-Mansouri',
   },
   es: {
     welcome: 'Bienvenido',
@@ -73,6 +81,49 @@ const translations: Record<string, Record<string, string>> = {
     prescriptions: 'Mis Recetas',
     support: 'Soporte y Ayuda',
     logout: 'Cerrar Sesión',
+    currency: 'AED',
+    country: 'EAU',
+    emergencyNumber: '+971-800-TRAVEL',
+    hospitalName: 'Hospital de Dubai',
+    clinicName: 'Centro Médico de Abu Dhabi',
+    doctorName: 'Dr. Ahmed Al-Mansouri',
+  },
+  ar: {
+    welcome: 'مرحباً',
+    login: 'تسجيل الدخول',
+    email: 'البريد الإلكتروني',
+    password: 'كلمة المرور',
+    mobile: 'الهاتف المحمول',
+    otp: 'رمز التحقق',
+    policyNumber: 'رقم البوليصة',
+    dateOfBirth: 'تاريخ الميلاد',
+    forgotAccess: 'نسيت بيانات الدخول؟',
+    dashboard: 'لوحة التحكم',
+    viewPolicy: 'عرض البوليصة',
+    searchCoverage: 'البحث عن التغطية',
+    findDoctor: 'البحث عن طبيب',
+    telemedicine: 'الطب عن بُعد',
+    prescriptions: 'وصفاتي الطبية',
+    support: 'الدعم والمساعدة',
+    logout: 'تسجيل الخروج',
+    policyDetails: 'تفاصيل البوليصة',
+    coverage: 'التغطية',
+    dependents: 'التابعون',
+    validUntil: 'صالحة حتى',
+    downloadPdf: 'تحميل PDF',
+    searchTreatment: 'البحث عن علاج أو حالة',
+    bookAppointment: 'حجز موعد',
+    scheduleConsultation: 'جدولة استشارة',
+    uploadPrescription: 'رفع وصفة طبية',
+    orderMedicine: 'طلب دواء',
+    trackDelivery: 'تتبع التوصيل',
+    contactSupport: 'اتصل بالدعم',
+    currency: 'درهم',
+    country: 'الإمارات',
+    emergencyNumber: '+971-800-TRAVEL',
+    hospitalName: 'مستشفى دبي',
+    clinicName: 'مركز أبوظبي الطبي',
+    doctorName: 'د. أحمد المنصوري',
   }
 };
 
@@ -84,6 +135,10 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const setLanguage = (language: Language) => {
     setCurrentLanguage(language);
     localStorage.setItem('travelInsurance_language', language.code);
+    
+    // Set document direction for RTL languages
+    document.documentElement.dir = language.direction;
+    document.documentElement.lang = language.code;
   };
 
   const t = (key: string): string => {

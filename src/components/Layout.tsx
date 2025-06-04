@@ -1,9 +1,9 @@
-
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import LanguageSelector from '@/components/LanguageSelector';
 import { 
   FileText, 
   Search, 
@@ -74,8 +74,9 @@ const Layout = ({ children }: LayoutProps) => {
           </div>
         </nav>
 
-        <div className="p-4 border-t">
-          <div className="mb-3 text-sm text-gray-600">
+        <div className="p-4 border-t space-y-3">
+          <LanguageSelector />
+          <div className="text-sm text-gray-600">
             Welcome, {user?.name}
           </div>
           <Button

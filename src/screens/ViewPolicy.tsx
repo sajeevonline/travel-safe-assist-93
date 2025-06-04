@@ -20,19 +20,19 @@ const ViewPolicy = () => {
   const { t } = useLanguage();
 
   const coverageItems = [
-    { name: 'Emergency Medical Treatment', covered: true, limit: '$100,000' },
-    { name: 'Hospital Accommodation', covered: true, limit: '$200/day' },
-    { name: 'Emergency Dental', covered: true, limit: '$2,000' },
-    { name: 'Prescription Medicines', covered: true, limit: '$500' },
-    { name: 'Medical Evacuation', covered: true, limit: '$500,000' },
+    { name: 'Emergency Medical Treatment', covered: true, limit: `${t('currency')} 367,000` },
+    { name: 'Hospital Accommodation', covered: true, limit: `${t('currency')} 735/day` },
+    { name: 'Emergency Dental', covered: true, limit: `${t('currency')} 7,350` },
+    { name: 'Prescription Medicines', covered: true, limit: `${t('currency')} 1,835` },
+    { name: 'Medical Evacuation', covered: true, limit: `${t('currency')} 1,835,000` },
     { name: 'Repatriation', covered: true, limit: 'Unlimited' },
     { name: 'Pre-existing Conditions', covered: false, limit: 'N/A' },
     { name: 'Routine Check-ups', covered: false, limit: 'N/A' },
   ];
 
   const dependents = [
-    { name: 'Sarah Traveler', relationship: 'Spouse', age: 34 },
-    { name: 'Michael Traveler', relationship: 'Child', age: 8 },
+    { name: 'Fatima Al-Zahra', relationship: 'Spouse', age: 34 },
+    { name: 'Omar Al-Mansouri', relationship: 'Child', age: 8 },
   ];
 
   return (
@@ -72,7 +72,7 @@ const ViewPolicy = () => {
             <div className="flex items-center space-x-3 mb-4">
               <Shield className="w-8 h-8" />
               <div>
-                <h2 className="text-xl font-bold">International Travel Insurance</h2>
+                <h2 className="text-xl font-bold">International Travel Insurance - {t('country')}</h2>
                 <p className="text-white/90">Policy Number: {user?.policyNumber}</p>
               </div>
             </div>
@@ -107,6 +107,10 @@ const ViewPolicy = () => {
             <div className="flex justify-between">
               <span className="text-gray-600">Policy Type</span>
               <span className="font-medium">Individual + Family</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Coverage Region</span>
+              <span className="font-medium">{t('country')} & Worldwide</span>
             </div>
           </CardContent>
         </Card>
@@ -175,9 +179,10 @@ const ViewPolicy = () => {
           <CardContent>
             <ul className="text-sm text-amber-700 space-y-2">
               <li>• Always carry your policy card when traveling</li>
-              <li>• Contact emergency assistance before seeking treatment</li>
+              <li>• Contact emergency assistance {t('emergencyNumber')} before seeking treatment</li>
               <li>• Keep all medical receipts for reimbursement</li>
-              <li>• Pre-authorization required for treatments over $1,000</li>
+              <li>• Pre-authorization required for treatments over {t('currency')} 3,670</li>
+              <li>• Coverage valid in {t('country')} and worldwide destinations</li>
             </ul>
           </CardContent>
         </Card>

@@ -74,7 +74,7 @@ const Dashboard = () => {
               <Globe className="w-10 h-10 lg:w-12 lg:h-12" />
               <div>
                 <h2 className="text-xl lg:text-2xl font-bold">{t('welcome')}, {user?.name}!</h2>
-                <p className="text-white/90 text-sm lg:text-base">Your health coverage abroad</p>
+                <p className="text-white/90 text-sm lg:text-base">Your health coverage in {t('country')} & abroad</p>
               </div>
             </div>
             
@@ -93,8 +93,8 @@ const Dashboard = () => {
                   <p className="text-lg font-semibold">{user?.policyNumber}</p>
                 </div>
                 <div className="hidden lg:block">
-                  <p className="text-white/80 text-xs uppercase tracking-wide">Coverage Period</p>
-                  <p className="text-lg font-semibold">365 days</p>
+                  <p className="text-white/80 text-xs uppercase tracking-wide">Coverage Region</p>
+                  <p className="text-lg font-semibold">{t('country')} & Worldwide</p>
                 </div>
               </div>
             </div>
@@ -134,8 +134,8 @@ const Dashboard = () => {
                       <span className="font-medium">365 days</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Policy Type</span>
-                      <span className="font-medium">Individual + Family</span>
+                      <span className="text-gray-600">Coverage Region</span>
+                      <span className="font-medium">{t('country')} & Worldwide</span>
                     </div>
                   </div>
                 </div>
@@ -154,8 +154,8 @@ const Dashboard = () => {
                   </div>
                   <div>
                     <h4 className="font-semibold text-red-800">24/7 Support</h4>
-                    <p className="text-red-700 text-sm">+1-800-TRAVEL</p>
-                    <p className="text-red-600 text-xs mt-1">Always available worldwide</p>
+                    <p className="text-red-700 text-sm">{t('emergencyNumber')}</p>
+                    <p className="text-red-600 text-xs mt-1">Available worldwide from {t('country')}</p>
                   </div>
                 </div>
               </CardContent>
@@ -195,14 +195,14 @@ const Dashboard = () => {
                   <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
                     <Search className="w-5 h-5 text-travel-teal" />
                     <div className="flex-1">
-                      <p className="font-medium">Coverage Search: "Dental Emergency"</p>
+                      <p className="font-medium">Coverage Search: "Emergency Dental"</p>
                       <p className="text-sm text-gray-600">2 days ago</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
                     <MapPin className="w-5 h-5 text-travel-teal" />
                     <div className="flex-1">
-                      <p className="font-medium">Provider Search in Paris</p>
+                      <p className="font-medium">Provider Search in {t('country')}</p>
                       <p className="text-sm text-gray-600">1 week ago</p>
                     </div>
                   </div>
