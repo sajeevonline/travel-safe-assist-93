@@ -57,7 +57,7 @@ const Dashboard = () => {
         }
       />
 
-      <div className="p-4 space-y-6">
+      <div className="p-4 space-y-6 max-w-full">
         {/* Welcome Section */}
         <div className="travel-gradient rounded-xl p-6 text-white">
           <div className="flex items-center space-x-3 mb-4">

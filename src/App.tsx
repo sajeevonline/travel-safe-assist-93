@@ -27,17 +27,19 @@ const App = () => (
             <Toaster />
             <Sonner />
             <div className="min-h-screen bg-gray-50">
-              <Routes>
-                <Route path="/" element={<LoginScreen />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/policy" element={<ViewPolicy />} />
-                <Route path="/coverage" element={<SearchCoverage />} />
-                <Route path="/providers" element={<ProviderNetwork />} />
-                <Route path="/telemedicine" element={<Telemedicine />} />
-                <Route path="/prescriptions" element={<Prescriptions />} />
-                <Route path="/support" element={<Support />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+              <div className="max-w-md mx-auto bg-white min-h-screen shadow-lg">
+                <Routes>
+                  <Route path="/" element={<LoginScreen />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/policy" element={<ViewPolicy />} />
+                  <Route path="/coverage" element={<SearchCoverage />} />
+                  <Route path="/providers" element={<ProviderNetwork />} />
+                  <Route path="/telemedicine" element={<Telemedicine />} />
+                  <Route path="/prescriptions" element={<Prescriptions />} />
+                  <Route path="/support" element={<Support />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </div>
             </div>
           </AuthProvider>
         </LanguageProvider>
