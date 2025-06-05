@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { User, Session } from '@supabase/supabase-js';
@@ -19,7 +20,6 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (credentials: LoginCredentials) => Promise<boolean>;
   signUp: (credentials: SignUpCredentials) => Promise<boolean>;
-  resendConfirmation: (email: string) => Promise<boolean>;
   logout: () => void;
   loading: boolean;
 }
@@ -109,19 +109,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
 
       if (error) {
-        if (error.message === 'Email not confirmed') {
-          toast({
-            title: "Email Not Confirmed",
-            description: "Please check your email and click the confirmation link before logging in. You can also resend the confirmation email.",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Login Failed",
-            description: error.message,
-            variant: "destructive",
-          });
-        }
+        toast({
+          title: "Login Failed",
+          description: error.message,
+          variant: "destructive",
+        });
         return false;
       }
 
@@ -172,7 +164,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       toast({
         title: "Account Created!",
-        description: "Please check your email to verify your account before logging in.",
+        description: "Please check your email to verify your account.",
       });
       
       return true;
@@ -186,38 +178,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return false;
     } finally {
       setLoading(false);
-    }
-  };
-
-  const resendConfirmation = async (email: string): Promise<boolean> => {
-    try {
-      const { error } = await supabase.auth.resend({
-        type: 'signup',
-        email: email
-      });
-
-      if (error) {
-        toast({
-          title: "Failed to Resend",
-          description: error.message,
-          variant: "destructive",
-        });
-        return false;
-      }
-
-      toast({
-        title: "Email Sent",
-        description: "Please check your email for the confirmation link.",
-      });
-      return true;
-    } catch (error) {
-      console.error('Resend confirmation error:', error);
-      toast({
-        title: "Failed to Resend",
-        description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-      });
-      return false;
     }
   };
 
@@ -240,7 +200,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       isAuthenticated: !!user,
       login,
       signUp,
-      resendConfirmation,
       logout,
       loading
     }}>
