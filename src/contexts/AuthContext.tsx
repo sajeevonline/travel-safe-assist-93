@@ -1,205 +1,82 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { User, Session } from '@supabase/supabase-js';
-import { useToast } from '@/hooks/use-toast';
 
-interface UserProfile {
+interface User {
   id: string;
   name: string;
   email: string;
-  policy_number: string;
-  policy_start_date: string;
-  policy_end_date: string;
+  policyNumber: string;
+  dependents: number;
+  policyStartDate: string;
+  policyEndDate: string;
 }
 
 interface AuthContextType {
   user: User | null;
-  profile: UserProfile | null;
-  session: Session | null;
   isAuthenticated: boolean;
   login: (credentials: LoginCredentials) => Promise<boolean>;
-  signUp: (credentials: SignUpCredentials) => Promise<boolean>;
   logout: () => void;
   loading: boolean;
 }
 
 interface LoginCredentials {
-  email: string;
-  password: string;
-}
-
-interface SignUpCredentials {
-  email: string;
-  password: string;
-  name: string;
+  type: 'email' | 'mobile' | 'policy';
+  email?: string;
+  password?: string;
+  mobile?: string;
+  otp?: string;
+  policyNumber?: string;
+  dateOfBirth?: string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
 
   useEffect(() => {
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('Auth state changed:', event, session?.user?.id);
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (session?.user) {
-          // Fetch user profile when authenticated
-          setTimeout(async () => {
-            await fetchUserProfile(session.user.id);
-          }, 0);
-        } else {
-          setProfile(null);
-        }
-        
-        setLoading(false);
-      }
-    );
-
     // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('Initial session check:', session?.user?.id);
-      setSession(session);
-      setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        fetchUserProfile(session.user.id);
-      }
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const fetchUserProfile = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
-
-      if (error) {
-        console.error('Error fetching profile:', error);
-        return;
-      }
-
-      setProfile(data);
-    } catch (error) {
-      console.error('Error fetching user profile:', error);
+    const savedUser = localStorage.getItem('travelInsurance_user');
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
     }
-  };
+    setLoading(false);
+  }, []);
 
   const login = async (credentials: LoginCredentials): Promise<boolean> => {
     setLoading(true);
     
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: credentials.email,
-        password: credentials.password,
-      });
-
-      if (error) {
-        toast({
-          title: "Login Failed",
-          description: error.message,
-          variant: "destructive",
-        });
-        return false;
-      }
-
-      toast({
-        title: "Welcome back!",
-        description: "You have successfully logged in.",
-      });
-      
-      return true;
-    } catch (error) {
-      console.error('Login error:', error);
-      toast({
-        title: "Login Failed",
-        description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-      });
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const signUp = async (credentials: SignUpCredentials): Promise<boolean> => {
-    setLoading(true);
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1500));
     
-    try {
-      const redirectUrl = `${window.location.origin}/`;
-      
-      const { error } = await supabase.auth.signUp({
-        email: credentials.email,
-        password: credentials.password,
-        options: {
-          emailRedirectTo: redirectUrl,
-          data: {
-            name: credentials.name,
-          }
-        }
-      });
-
-      if (error) {
-        toast({
-          title: "Sign Up Failed",
-          description: error.message,
-          variant: "destructive",
-        });
-        return false;
-      }
-
-      toast({
-        title: "Account Created!",
-        description: "Please check your email to verify your account.",
-      });
-      
-      return true;
-    } catch (error) {
-      console.error('Sign up error:', error);
-      toast({
-        title: "Sign Up Failed",
-        description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-      });
-      return false;
-    } finally {
-      setLoading(false);
-    }
+    // Mock successful login
+    const mockUser: User = {
+      id: '1',
+      name: 'John Traveler',
+      email: credentials.email || 'john@example.com',
+      policyNumber: 'TI-2024-001234',
+      dependents: 2,
+      policyStartDate: '2024-01-15',
+      policyEndDate: '2024-12-15'
+    };
+    
+    setUser(mockUser);
+    localStorage.setItem('travelInsurance_user', JSON.stringify(mockUser));
+    setLoading(false);
+    return true;
   };
 
-  const logout = async () => {
-    await supabase.auth.signOut();
+  const logout = () => {
     setUser(null);
-    setSession(null);
-    setProfile(null);
-    toast({
-      title: "Logged out",
-      description: "You have been successfully logged out.",
-    });
+    localStorage.removeItem('travelInsurance_user');
   };
 
   return (
     <AuthContext.Provider value={{
       user,
-      profile,
-      session,
       isAuthenticated: !!user,
       login,
-      signUp,
       logout,
       loading
     }}>
