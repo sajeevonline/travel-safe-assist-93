@@ -8,10 +8,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Globe, Shield } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Globe, Shield, Mail } from 'lucide-react';
 
 const AuthScreen = () => {
-  const { login, signUp, isAuthenticated, loading } = useAuth();
+  const { login, signUp, resendConfirmation, isAuthenticated, loading } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
   
@@ -26,6 +27,9 @@ const AuthScreen = () => {
     password: '',
     confirmPassword: ''
   });
+
+  const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
+  const [pendingEmail, setPendingEmail] = useState('');
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -55,8 +59,13 @@ const AuthScreen = () => {
     });
     
     if (success) {
-      // Stay on auth screen to show verification message
+      setShowEmailConfirmation(true);
+      setPendingEmail(signUpForm.email);
     }
+  };
+
+  const handleResendConfirmation = async () => {
+    await resendConfirmation(pendingEmail);
   };
 
   if (loading) {
@@ -91,96 +100,142 @@ const AuthScreen = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="login" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="login">Login</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="login">
-                <form onSubmit={handleLogin} className="space-y-4">
-                  <div>
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={loginForm.email}
-                      onChange={(e) => setLoginForm({...loginForm, email: e.target.value})}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="password">Password</Label>
-                    <Input
-                      id="password"
-                      type="password"
-                      value={loginForm.password}
-                      onChange={(e) => setLoginForm({...loginForm, password: e.target.value})}
-                      required
-                    />
-                  </div>
+            {showEmailConfirmation ? (
+              <div className="text-center space-y-4">
+                <Mail className="w-16 h-16 text-travel-teal mx-auto" />
+                <h3 className="text-lg font-semibold">Check Your Email</h3>
+                <p className="text-gray-600">
+                  We've sent a confirmation link to <strong>{pendingEmail}</strong>. 
+                  Please click the link in your email to verify your account before logging in.
+                </p>
+                <Alert>
+                  <AlertDescription>
+                    Didn't receive the email? Check your spam folder or click the button below to resend.
+                  </AlertDescription>
+                </Alert>
+                <div className="space-y-2">
                   <Button 
-                    type="submit" 
-                    className="w-full bg-travel-teal hover:bg-travel-teal/90"
-                    disabled={loading}
+                    onClick={handleResendConfirmation}
+                    variant="outline"
+                    className="w-full"
                   >
-                    {loading ? 'Signing in...' : 'Sign In'}
+                    Resend Confirmation Email
                   </Button>
-                </form>
-              </TabsContent>
-              
-              <TabsContent value="signup">
-                <form onSubmit={handleSignUp} className="space-y-4">
-                  <div>
-                    <Label htmlFor="name">Full Name</Label>
-                    <Input
-                      id="name"
-                      type="text"
-                      value={signUpForm.name}
-                      onChange={(e) => setSignUpForm({...signUpForm, name: e.target.value})}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="signup-email">Email</Label>
-                    <Input
-                      id="signup-email"
-                      type="email"
-                      value={signUpForm.email}
-                      onChange={(e) => setSignUpForm({...signUpForm, email: e.target.value})}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="signup-password">Password</Label>
-                    <Input
-                      id="signup-password"
-                      type="password"
-                      value={signUpForm.password}
-                      onChange={(e) => setSignUpForm({...signUpForm, password: e.target.value})}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="confirm-password">Confirm Password</Label>
-                    <Input
-                      id="confirm-password"
-                      type="password"
-                      value={signUpForm.confirmPassword}
-                      onChange={(e) => setSignUpForm({...signUpForm, confirmPassword: e.target.value})}
-                      required
-                    />
-                  </div>
                   <Button 
-                    type="submit" 
-                    className="w-full bg-travel-teal hover:bg-travel-teal/90"
-                    disabled={loading || signUpForm.password !== signUpForm.confirmPassword}
+                    onClick={() => setShowEmailConfirmation(false)}
+                    variant="ghost"
+                    className="w-full"
                   >
-                    {loading ? 'Creating Account...' : 'Create Account'}
+                    Back to Login
                   </Button>
-                </form>
-              </TabsContent>
-            </Tabs>
+                </div>
+              </div>
+            ) : (
+              <Tabs defaultValue="login" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="login">Login</TabsTrigger>
+                  <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="login">
+                  <form onSubmit={handleLogin} className="space-y-4">
+                    <div>
+                      <Label htmlFor="email">Email</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={loginForm.email}
+                        onChange={(e) => setLoginForm({...loginForm, email: e.target.value})}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="password">Password</Label>
+                      <Input
+                        id="password"
+                        type="password"
+                        value={loginForm.password}
+                        onChange={(e) => setLoginForm({...loginForm, password: e.target.value})}
+                        required
+                      />
+                    </div>
+                    <Button 
+                      type="submit" 
+                      className="w-full bg-travel-teal hover:bg-travel-teal/90"
+                      disabled={loading}
+                    >
+                      {loading ? 'Signing in...' : 'Sign In'}
+                    </Button>
+                    <div className="text-center">
+                      <Button
+                        type="button"
+                        variant="link"
+                        onClick={() => {
+                          if (loginForm.email) {
+                            resendConfirmation(loginForm.email);
+                          }
+                        }}
+                        className="text-sm text-travel-teal"
+                      >
+                        Resend confirmation email
+                      </Button>
+                    </div>
+                  </form>
+                </TabsContent>
+                
+                <TabsContent value="signup">
+                  <form onSubmit={handleSignUp} className="space-y-4">
+                    <div>
+                      <Label htmlFor="name">Full Name</Label>
+                      <Input
+                        id="name"
+                        type="text"
+                        value={signUpForm.name}
+                        onChange={(e) => setSignUpForm({...signUpForm, name: e.target.value})}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="signup-email">Email</Label>
+                      <Input
+                        id="signup-email"
+                        type="email"
+                        value={signUpForm.email}
+                        onChange={(e) => setSignUpForm({...signUpForm, email: e.target.value})}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="signup-password">Password</Label>
+                      <Input
+                        id="signup-password"
+                        type="password"
+                        value={signUpForm.password}
+                        onChange={(e) => setSignUpForm({...signUpForm, password: e.target.value})}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="confirm-password">Confirm Password</Label>
+                      <Input
+                        id="confirm-password"
+                        type="password"
+                        value={signUpForm.confirmPassword}
+                        onChange={(e) => setSignUpForm({...signUpForm, confirmPassword: e.target.value})}
+                        required
+                      />
+                    </div>
+                    <Button 
+                      type="submit" 
+                      className="w-full bg-travel-teal hover:bg-travel-teal/90"
+                      disabled={loading || signUpForm.password !== signUpForm.confirmPassword}
+                    >
+                      {loading ? 'Creating Account...' : 'Create Account'}
+                    </Button>
+                  </form>
+                </TabsContent>
+              </Tabs>
+            )}
           </CardContent>
         </Card>
       </div>
