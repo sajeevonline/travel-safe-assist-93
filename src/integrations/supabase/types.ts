@@ -9,7 +9,200 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      appointments: {
+        Row: {
+          appointment_date: string
+          created_at: string | null
+          id: string
+          notes: string | null
+          provider_id: string
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          appointment_date: string
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          provider_id: string
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          appointment_date?: string
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          provider_id?: string
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coverage_items: {
+        Row: {
+          category: string
+          condition: string
+          coverage_description: string
+          covered: boolean
+          created_at: string | null
+          id: string
+          limit_amount: string | null
+          notes: string | null
+        }
+        Insert: {
+          category: string
+          condition: string
+          coverage_description: string
+          covered: boolean
+          created_at?: string | null
+          id?: string
+          limit_amount?: string | null
+          notes?: string | null
+        }
+        Update: {
+          category?: string
+          condition?: string
+          coverage_description?: string
+          covered?: boolean
+          created_at?: string | null
+          id?: string
+          limit_amount?: string | null
+          notes?: string | null
+        }
+        Relationships: []
+      }
+      prescriptions: {
+        Row: {
+          created_at: string | null
+          doctor_name: string
+          dosage: string
+          frequency: string
+          id: string
+          medication_name: string
+          pharmacy_name: string | null
+          prescribed_date: string
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          doctor_name: string
+          dosage: string
+          frequency: string
+          id?: string
+          medication_name: string
+          pharmacy_name?: string | null
+          prescribed_date: string
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          doctor_name?: string
+          dosage?: string
+          frequency?: string
+          id?: string
+          medication_name?: string
+          pharmacy_name?: string | null
+          prescribed_date?: string
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          name: string
+          policy_end_date: string
+          policy_number: string
+          policy_start_date: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id: string
+          name: string
+          policy_end_date: string
+          policy_number: string
+          policy_start_date: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          name?: string
+          policy_end_date?: string
+          policy_number?: string
+          policy_start_date?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      providers: {
+        Row: {
+          accepts_insurance: boolean | null
+          address: string
+          available: boolean | null
+          created_at: string | null
+          id: string
+          languages: string[] | null
+          latitude: number | null
+          longitude: number | null
+          name: string
+          phone: string
+          rating: number | null
+          specialty: string
+          type: string
+        }
+        Insert: {
+          accepts_insurance?: boolean | null
+          address: string
+          available?: boolean | null
+          created_at?: string | null
+          id?: string
+          languages?: string[] | null
+          latitude?: number | null
+          longitude?: number | null
+          name: string
+          phone: string
+          rating?: number | null
+          specialty: string
+          type: string
+        }
+        Update: {
+          accepts_insurance?: boolean | null
+          address?: string
+          available?: boolean | null
+          created_at?: string | null
+          id?: string
+          languages?: string[] | null
+          latitude?: number | null
+          longitude?: number | null
+          name?: string
+          phone?: string
+          rating?: number | null
+          specialty?: string
+          type?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

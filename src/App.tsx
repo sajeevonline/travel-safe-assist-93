@@ -15,6 +15,9 @@ import ProviderNetwork from "./screens/ProviderNetwork";
 import Telemedicine from "./screens/Telemedicine";
 import Prescriptions from "./screens/Prescriptions";
 import Support from "./screens/Support";
+import BookingPage from "./screens/BookingPage";
+import TelemedicineBooking from "./screens/TelemedicineBooking";
+import TelemedicineCall from "./screens/TelemedicineCall";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +40,9 @@ const App = () => (
                 <Route path="/telemedicine" element={<Layout><Telemedicine /></Layout>} />
                 <Route path="/prescriptions" element={<Layout><Prescriptions /></Layout>} />
                 <Route path="/support" element={<Layout><Support /></Layout>} />
+                <Route path="/booking" element={<Layout><BookingPage /></Layout>} />
+                <Route path="/telemedicine-booking" element={<Layout><TelemedicineBooking /></Layout>} />
+                <Route path="/telemedicine-call" element={<TelemedicineCall />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </div>
