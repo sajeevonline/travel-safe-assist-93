@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -20,7 +21,7 @@ interface LayoutProps {
 }
 
 const Layout = ({ children }: LayoutProps) => {
-  const { user, logout } = useAuth();
+  const { profile, logout } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
@@ -77,7 +78,7 @@ const Layout = ({ children }: LayoutProps) => {
         <div className="p-4 border-t space-y-3">
           <LanguageSelector />
           <div className="text-sm text-gray-600">
-            Welcome, {user?.name}
+            Welcome, {profile?.name || 'User'}
           </div>
           <Button
             variant="outline"

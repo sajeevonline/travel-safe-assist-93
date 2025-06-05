@@ -1,11 +1,13 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { supabase } from '@/integrations/supabase/client';
 import MobileHeader from '@/components/MobileHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
 import { 
   Search, 
   MapPin, 
@@ -16,71 +18,76 @@ import {
   Navigation
 } from 'lucide-react';
 
+interface Provider {
+  id: string;
+  name: string;
+  type: string;
+  specialty: string;
+  address: string;
+  phone: string;
+  rating: number;
+  available: boolean;
+  languages: string[];
+  accepts_insurance: boolean;
+}
+
 const ProviderNetwork = () => {
   const { t } = useLanguage();
+  const { toast } = useToast();
   const [searchLocation, setSearchLocation] = useState('');
   const [selectedSpecialty, setSelectedSpecialty] = useState('All');
+  const [providers, setProviders] = useState<Provider[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const specialties = ['All', 'General Practice', 'Emergency', 'Cardiology', 'Dentistry', 'Orthopedics', 'Pediatrics'];
 
-  const providers = [
-    {
-      id: 1,
-      name: 'City General Hospital',
-      type: 'Hospital',
-      specialty: 'Emergency',
-      address: '123 Main St, Downtown',
-      distance: '0.8 km',
-      rating: 4.8,
-      available: true,
-      phone: '+1-555-0123',
-      languages: ['English', 'Spanish'],
-      acceptsInsurance: true
-    },
-    {
-      id: 2,
-      name: 'Dr. Sarah Johnson',
-      type: 'Doctor',
-      specialty: 'General Practice',
-      address: '456 Health Ave, Medical District',
-      distance: '1.2 km',
-      rating: 4.9,
-      available: true,
-      phone: '+1-555-0456',
-      languages: ['English', 'French'],
-      acceptsInsurance: true
-    },
-    {
-      id: 3,
-      name: 'Metro Dental Clinic',
-      type: 'Clinic',
-      specialty: 'Dentistry',
-      address: '789 Smile Blvd, Central',
-      distance: '2.1 km',
-      rating: 4.6,
-      available: false,
-      phone: '+1-555-0789',
-      languages: ['English'],
-      acceptsInsurance: true
-    },
-    {
-      id: 4,
-      name: 'Heart Care Center',
-      type: 'Specialist',
-      specialty: 'Cardiology',
-      address: '321 Cardiac Way, Uptown',
-      distance: '3.5 km',
-      rating: 4.7,
-      available: true,
-      phone: '+1-555-0321',
-      languages: ['English', 'German'],
-      acceptsInsurance: true
+  useEffect(() => {
+    fetchProviders();
+  }, []);
+
+  const fetchProviders = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('providers')
+        .select('*')
+        .order('rating', { ascending: false });
+
+      if (error) throw error;
+
+      setProviders(data || []);
+    } catch (error) {
+      console.error('Error fetching providers:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load providers. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
   const filteredProviders = providers.filter(provider => 
     selectedSpecialty === 'All' || provider.specialty === selectedSpecialty
   );
+
+  const handleBookAppointment = async (providerId: string) => {
+    toast({
+      title: "Booking Appointment",
+      description: "This feature will be available soon.",
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <MobileHeader title={t('findDoctor')} showBack={true} />
+        <div className="p-4 flex items-center justify-center">
+          <div className="animate-spin w-8 h-8 border-4 border-travel-teal border-t-transparent rounded-full"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -152,9 +159,6 @@ const ProviderNetwork = () => {
                   <div className="flex items-center space-x-2 text-sm text-gray-600">
                     <MapPin className="w-4 h-4" />
                     <span>{provider.address}</span>
-                    <Badge variant="outline" className="ml-auto">
-                      {provider.distance}
-                    </Badge>
                   </div>
 
                   <div className="flex items-center space-x-2 text-sm text-gray-600">
@@ -187,6 +191,7 @@ const ProviderNetwork = () => {
                   <Button 
                     className="flex-1 bg-travel-teal hover:bg-travel-teal/90"
                     disabled={!provider.available}
+                    onClick={() => handleBookAppointment(provider.id)}
                   >
                     {t('bookAppointment')}
                   </Button>
@@ -198,7 +203,7 @@ const ProviderNetwork = () => {
                   </Button>
                 </div>
 
-                {provider.acceptsInsurance && (
+                {provider.accepts_insurance && (
                   <div className="mt-3 p-2 bg-green-50 rounded-lg">
                     <p className="text-xs text-green-700 font-medium">
                       ✓ Accepts your insurance - No upfront payment required
@@ -219,7 +224,7 @@ const ProviderNetwork = () => {
               </div>
               <div>
                 <h4 className="font-semibold text-red-800">Emergency Services</h4>
-                <p className="text-red-700 text-sm">Call 911 for immediate medical emergency</p>
+                <p className="text-red-700 text-sm">Call 999 for immediate medical emergency</p>
               </div>
             </div>
           </CardContent>
