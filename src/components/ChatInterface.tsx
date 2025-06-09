@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Mic, Camera, Paperclip, Phone, MapPin, Heart, X, Calendar, User, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -231,7 +230,6 @@ const ChatInterface = () => {
         break;
 
       case 'close_widget':
-        // Remove the last widget message
         setMessages(prev => prev.filter((_, index) => index !== prev.length - 1));
         addMessage("How else can I assist you today?", 'ai', [
           { label: "🔍 Find Medical Care", action: "find_doctors" },
@@ -277,26 +275,26 @@ const ChatInterface = () => {
   return (
     <div className="flex flex-col h-full bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 p-4">
+      <div className="bg-white border-b border-gray-200 p-3 lg:p-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-travel-teal rounded-full flex items-center justify-center">
-              <Heart className="w-5 h-5 text-white" />
+          <div className="flex items-center space-x-2 lg:space-x-3">
+            <div className="w-8 h-8 lg:w-10 lg:h-10 bg-travel-teal rounded-full flex items-center justify-center">
+              <Heart className="w-4 h-4 lg:w-5 lg:h-5 text-white" />
             </div>
             <div>
-              <h2 className="font-semibold text-gray-900">TravelCare AI Assistant</h2>
-              <p className="text-sm text-gray-600">Online • Instant help available</p>
+              <h2 className="text-sm lg:text-base font-semibold text-gray-900">TravelCare AI Assistant</h2>
+              <p className="text-xs lg:text-sm text-gray-600">Online • Instant help available</p>
             </div>
           </div>
-          <Badge className="bg-green-100 text-green-800">Policy Active</Badge>
+          <Badge className="bg-green-100 text-green-800 text-xs">Policy Active</Badge>
         </div>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-3 lg:p-4 space-y-3 lg:space-y-4">
         {messages.map((message) => (
           <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[85%] ${
+            <div className={`max-w-[90%] lg:max-w-[85%] xl:max-w-[80%] ${
               message.sender === 'user' 
                 ? 'bg-travel-teal text-white' 
                 : message.type === 'emergency' 
@@ -305,8 +303,8 @@ const ChatInterface = () => {
             } rounded-lg shadow-sm overflow-hidden`}>
               
               {/* Message Content */}
-              <div className="p-4">
-                <div className={`whitespace-pre-wrap text-sm ${
+              <div className="p-3 lg:p-4">
+                <div className={`whitespace-pre-wrap text-xs lg:text-sm ${
                   message.type === 'emergency' ? 'text-red-800' : 
                   message.sender === 'user' ? 'text-white' : 'text-gray-800'
                 }`}>
@@ -315,14 +313,14 @@ const ChatInterface = () => {
                 
                 {/* Action Buttons */}
                 {message.actions && (
-                  <div className="mt-3 flex flex-wrap gap-2">
+                  <div className="mt-2 lg:mt-3 flex flex-wrap gap-1 lg:gap-2">
                     {message.actions.map((action, index) => (
                       <Button
                         key={index}
                         size="sm"
                         variant={action.primary ? "default" : "outline"}
                         onClick={() => handleAction(action.action, action.data)}
-                        className={`text-xs ${
+                        className={`text-xs h-7 lg:h-8 px-2 lg:px-3 ${
                           message.type === 'emergency' 
                             ? action.primary 
                               ? 'bg-red-600 hover:bg-red-700 text-white'
@@ -345,7 +343,7 @@ const ChatInterface = () => {
               )}
 
               {/* Timestamp */}
-              <div className={`px-4 pb-2 text-xs ${
+              <div className={`px-3 lg:px-4 pb-2 text-xs ${
                 message.sender === 'user' ? 'text-white/70' : 'text-gray-500'
               }`}>
                 {message.timestamp.toLocaleTimeString()}
@@ -356,14 +354,14 @@ const ChatInterface = () => {
         
         {isTyping && (
           <div className="flex justify-start">
-            <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+            <div className="bg-white border border-gray-200 rounded-lg p-3 lg:p-4 shadow-sm max-w-[90%] lg:max-w-[85%]">
               <div className="flex items-center space-x-2">
                 <div className="flex space-x-1">
                   <div className="w-2 h-2 bg-travel-teal rounded-full animate-bounce"></div>
                   <div className="w-2 h-2 bg-travel-teal rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
                   <div className="w-2 h-2 bg-travel-teal rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                 </div>
-                <span className="text-sm text-gray-600">AI is thinking...</span>
+                <span className="text-xs lg:text-sm text-gray-600">AI is thinking...</span>
               </div>
             </div>
           </div>
@@ -372,37 +370,37 @@ const ChatInterface = () => {
       </div>
 
       {/* Input Area */}
-      <div className="border-t bg-white p-4">
+      <div className="border-t bg-white p-3 lg:p-4">
         <div className="flex items-center space-x-2">
-          <Button variant="outline" size="sm" className="shrink-0">
-            <Camera className="w-4 h-4" />
+          <Button variant="outline" size="sm" className="shrink-0 w-8 h-8 lg:w-9 lg:h-9 p-0">
+            <Camera className="w-3 h-3 lg:w-4 lg:h-4" />
           </Button>
-          <Button variant="outline" size="sm" className="shrink-0">
-            <Paperclip className="w-4 h-4" />
+          <Button variant="outline" size="sm" className="shrink-0 w-8 h-8 lg:w-9 lg:h-9 p-0">
+            <Paperclip className="w-3 h-3 lg:w-4 lg:h-4" />
           </Button>
           <Input
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-            placeholder="Ask me anything... 'Find a doctor', 'Check coverage', 'Emergency help'"
-            className="flex-1"
+            placeholder="Ask me anything..."
+            className="flex-1 text-xs lg:text-sm h-8 lg:h-9"
           />
           <VoiceInterface onVoiceInput={handleVoiceInput} />
           <Button 
             onClick={handleSendMessage} 
             disabled={!inputText.trim()}
-            className="shrink-0 bg-travel-teal hover:bg-travel-teal/90"
+            className="shrink-0 bg-travel-teal hover:bg-travel-teal/90 w-8 h-8 lg:w-9 lg:h-9 p-0"
           >
-            <Send className="w-4 h-4" />
+            <Send className="w-3 h-3 lg:w-4 lg:h-4" />
           </Button>
         </div>
         
         {/* Quick Suggestions */}
-        <div className="flex space-x-2 mt-2 overflow-x-auto pb-2">
+        <div className="flex space-x-1 lg:space-x-2 mt-2 overflow-x-auto pb-1 lg:pb-2">
           <Button 
             variant="outline" 
             size="sm" 
-            className="text-xs whitespace-nowrap"
+            className="text-xs whitespace-nowrap h-6 lg:h-7 px-2 lg:px-3"
             onClick={() => handleAction('emergency')}
           >
             🆘 Emergency
@@ -410,7 +408,7 @@ const ChatInterface = () => {
           <Button 
             variant="outline" 
             size="sm" 
-            className="text-xs whitespace-nowrap"
+            className="text-xs whitespace-nowrap h-6 lg:h-7 px-2 lg:px-3"
             onClick={() => handleAction('find_doctors')}
           >
             🔍 Find Doctor
@@ -418,7 +416,7 @@ const ChatInterface = () => {
           <Button 
             variant="outline" 
             size="sm" 
-            className="text-xs whitespace-nowrap"
+            className="text-xs whitespace-nowrap h-6 lg:h-7 px-2 lg:px-3"
             onClick={() => handleAction('telemedicine')}
           >
             💻 Telemedicine
@@ -426,7 +424,7 @@ const ChatInterface = () => {
           <Button 
             variant="outline" 
             size="sm" 
-            className="text-xs whitespace-nowrap"
+            className="text-xs whitespace-nowrap h-6 lg:h-7 px-2 lg:px-3"
             onClick={() => handleAction('check_coverage')}
           >
             📋 Coverage

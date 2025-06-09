@@ -16,7 +16,7 @@ const ChatDashboard = () => {
   return (
     <div className="h-screen flex flex-col bg-gray-50">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-4">
+      <header className="bg-white border-b border-gray-200 px-4 lg:px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <Button 
@@ -28,23 +28,23 @@ const ChatDashboard = () => {
               <ArrowLeft className="w-4 h-4" />
             </Button>
             <div className="flex items-center space-x-3">
-              <Globe className="w-8 h-8 text-travel-teal" />
+              <Globe className="w-6 h-6 lg:w-8 lg:h-8 text-travel-teal" />
               <div>
-                <h1 className="text-xl font-bold text-gray-900">TravelCare AI</h1>
-                <p className="text-sm text-gray-600">Your intelligent insurance assistant</p>
+                <h1 className="text-lg lg:text-xl font-bold text-gray-900">TravelCare AI</h1>
+                <p className="text-xs lg:text-sm text-gray-600 hidden sm:block">Your intelligent insurance assistant</p>
               </div>
             </div>
           </div>
           
-          <div className="flex items-center space-x-4">
-            <div className="text-sm text-gray-600 hidden sm:block">
-              Welcome, {user?.name}
+          <div className="flex items-center space-x-2 lg:space-x-4">
+            <div className="text-xs lg:text-sm text-gray-600 hidden sm:block max-w-32 lg:max-w-none truncate">
+              {user?.name}
             </div>
             <Button variant="outline" size="sm" className="hidden lg:flex">
               <Settings className="w-4 h-4 mr-2" />
               Settings
             </Button>
-            <Button variant="outline" size="sm" onClick={logout}>
+            <Button variant="outline" size="sm" onClick={logout} className="text-xs lg:text-sm">
               {t('logout')}
             </Button>
           </div>
@@ -53,13 +53,13 @@ const ChatDashboard = () => {
 
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Chat Interface */}
-        <div className="flex-1 flex flex-col">
+        {/* Chat Interface - Responsive width */}
+        <div className="flex-1 min-w-0 flex flex-col">
           <ChatInterface />
         </div>
         
-        {/* Quick Action Panel - Desktop Only */}
-        <div className="hidden lg:block">
+        {/* Quick Action Panel - Desktop Only, proper sizing */}
+        <div className="hidden xl:block w-80 flex-shrink-0">
           <QuickActionPanel />
         </div>
       </div>

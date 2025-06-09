@@ -84,22 +84,22 @@ const InlineProviderSearch: React.FC<InlineProviderSearchProps> = ({ onBook }) =
   });
 
   return (
-    <div className="p-4 space-y-4 max-h-96 overflow-y-auto">
+    <div className="p-3 lg:p-4 space-y-3 lg:space-y-4 max-h-80 lg:max-h-96 overflow-y-auto">
       {/* Search and Filter */}
-      <div className="space-y-3">
+      <div className="space-y-2 lg:space-y-3">
         <Input
           placeholder="Search by name or specialty..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="text-sm"
+          className="text-xs lg:text-sm h-8 lg:h-9"
         />
         
-        <div className="flex space-x-2">
+        <div className="flex flex-wrap gap-1 lg:gap-2">
           {types.map((type) => (
             <Badge
               key={type}
               variant={selectedType === type ? "default" : "outline"}
-              className="cursor-pointer text-xs"
+              className="cursor-pointer text-xs h-6 px-2"
               onClick={() => setSelectedType(type)}
             >
               {type}
@@ -109,69 +109,71 @@ const InlineProviderSearch: React.FC<InlineProviderSearchProps> = ({ onBook }) =
       </div>
 
       {/* Provider List */}
-      <div className="space-y-3">
+      <div className="space-y-2 lg:space-y-3">
         {filteredProviders.map((provider) => (
           <Card key={provider.id} className="border border-gray-200">
-            <CardContent className="p-3">
+            <CardContent className="p-2 lg:p-3">
               <div className="flex justify-between items-start mb-2">
-                <div className="flex-1">
-                  <h4 className="font-semibold text-sm">{provider.name}</h4>
+                <div className="flex-1 min-w-0 mr-2">
+                  <h4 className="font-semibold text-xs lg:text-sm truncate">{provider.name}</h4>
                   <p className="text-xs text-gray-600">{provider.type} • {provider.specialty}</p>
                 </div>
-                <div className="flex items-center space-x-1">
+                <div className="flex items-center space-x-1 flex-shrink-0">
                   <Star className="w-3 h-3 text-yellow-500 fill-current" />
                   <span className="text-xs font-medium">{provider.rating}</span>
                 </div>
               </div>
 
-              <div className="space-y-1 mb-3">
-                <div className="flex items-center space-x-2 text-xs text-gray-600">
-                  <MapPin className="w-3 h-3" />
-                  <span>{provider.address}</span>
-                  <Badge variant="outline" className="text-xs">
+              <div className="space-y-1 mb-2 lg:mb-3">
+                <div className="flex items-center space-x-1 lg:space-x-2 text-xs text-gray-600">
+                  <MapPin className="w-3 h-3 flex-shrink-0" />
+                  <span className="truncate flex-1">{provider.address}</span>
+                  <Badge variant="outline" className="text-xs h-5 px-1 flex-shrink-0">
                     {provider.distance}
                   </Badge>
                 </div>
 
-                <div className="flex items-center space-x-2 text-xs">
-                  <Clock className="w-3 h-3 text-gray-600" />
-                  <Badge variant={provider.available ? "default" : "secondary"} className="text-xs">
+                <div className="flex items-center space-x-1 lg:space-x-2 text-xs">
+                  <Clock className="w-3 h-3 text-gray-600 flex-shrink-0" />
+                  <Badge variant={provider.available ? "default" : "secondary"} className="text-xs h-5 px-1">
                     {provider.nextAvailable}
                   </Badge>
                 </div>
               </div>
 
               {/* Languages */}
-              <div className="flex items-center space-x-1 mb-3">
-                <span className="text-xs text-gray-500">Languages:</span>
-                {provider.languages.map((lang, index) => (
-                  <Badge key={index} variant="outline" className="text-xs">
-                    {lang}
-                  </Badge>
-                ))}
+              <div className="flex items-center space-x-1 mb-2 lg:mb-3">
+                <span className="text-xs text-gray-500 flex-shrink-0">Languages:</span>
+                <div className="flex flex-wrap gap-1">
+                  {provider.languages.map((lang, index) => (
+                    <Badge key={index} variant="outline" className="text-xs h-5 px-1">
+                      {lang}
+                    </Badge>
+                  ))}
+                </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex space-x-2">
+              <div className="flex space-x-1 lg:space-x-2 mb-2">
                 <Button 
                   size="sm" 
-                  className="flex-1 bg-travel-teal hover:bg-travel-teal/90 text-xs"
+                  className="flex-1 bg-travel-teal hover:bg-travel-teal/90 text-xs h-7 lg:h-8"
                   onClick={() => onBook(provider)}
                   disabled={!provider.available}
                 >
                   <Calendar className="w-3 h-3 mr-1" />
-                  Book Now
+                  Book
                 </Button>
-                <Button variant="outline" size="sm" className="text-xs">
+                <Button variant="outline" size="sm" className="text-xs h-7 lg:h-8 w-8 lg:w-9 p-0">
                   <Phone className="w-3 h-3" />
                 </Button>
-                <Button variant="outline" size="sm" className="text-xs">
+                <Button variant="outline" size="sm" className="text-xs h-7 lg:h-8 w-8 lg:w-9 p-0">
                   <Navigation className="w-3 h-3" />
                 </Button>
               </div>
 
               {provider.acceptsInsurance && (
-                <div className="mt-2 p-2 bg-green-50 rounded text-xs text-green-700">
+                <div className="p-1 lg:p-2 bg-green-50 rounded text-xs text-green-700">
                   ✓ Accepts your insurance - No upfront payment
                 </div>
               )}
