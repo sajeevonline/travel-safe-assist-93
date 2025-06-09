@@ -16,7 +16,7 @@ const ChatDashboard = () => {
   return (
     <div className="h-screen flex flex-col bg-gray-50">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-4 lg:px-6 py-4">
+      <header className="bg-white border-b border-gray-200 px-4 lg:px-6 py-3 lg:py-4 flex-shrink-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <Button 
@@ -52,14 +52,14 @@ const ChatDashboard = () => {
       </header>
 
       {/* Main Content */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Chat Interface - Responsive width */}
-        <div className="flex-1 min-w-0 flex flex-col">
+      <div className="flex-1 flex overflow-hidden min-h-0">
+        {/* Chat Interface - Takes most space on desktop */}
+        <div className="flex-1 min-w-0 flex flex-col lg:min-w-[600px]">
           <ChatInterface />
         </div>
         
-        {/* Quick Action Panel - Desktop Only, proper sizing */}
-        <div className="hidden xl:block w-80 flex-shrink-0">
+        {/* Quick Action Panel - Desktop Only, fixed width */}
+        <div className="hidden xl:block w-80 flex-shrink-0 border-l border-gray-200">
           <QuickActionPanel />
         </div>
       </div>
