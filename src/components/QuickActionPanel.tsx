@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
 import { 
   Phone, 
   MapPin, 
@@ -13,12 +12,19 @@ import {
   Globe, 
   Calendar,
   Users,
-  AlertCircle
+  AlertCircle,
+  MessageSquare,
+  Video,
+  Clock
 } from 'lucide-react';
 
 const QuickActionPanel = () => {
   const { user } = useAuth();
-  const navigate = useNavigate();
+
+  const sendChatMessage = (message: string) => {
+    // This would integrate with the chat interface to send a message
+    console.log('Sending message:', message);
+  };
 
   return (
     <div className="w-80 bg-gray-50 border-l border-gray-200 p-4 space-y-4 overflow-y-auto">
@@ -41,8 +47,9 @@ const QuickActionPanel = () => {
           <Button 
             variant="outline" 
             className="w-full text-red-600 border-red-200"
-            onClick={() => navigate('/support')}
+            onClick={() => sendChatMessage('Emergency help needed')}
           >
+            <MessageSquare className="w-4 h-4 mr-2" />
             Emergency Chat
           </Button>
         </CardContent>
@@ -73,9 +80,9 @@ const QuickActionPanel = () => {
             variant="outline" 
             size="sm" 
             className="w-full"
-            onClick={() => navigate('/policy')}
+            onClick={() => sendChatMessage('Show my policy details')}
           >
-            View Details
+            View in Chat
           </Button>
         </CardContent>
       </Card>
@@ -105,14 +112,59 @@ const QuickActionPanel = () => {
             variant="outline" 
             size="sm" 
             className="w-full"
-            onClick={() => navigate('/providers')}
+            onClick={() => sendChatMessage('Find doctors near me')}
           >
+            Find in Chat
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Quick Chat Actions */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm">Quick Actions</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="w-full justify-start"
+            onClick={() => sendChatMessage('I need telemedicine consultation')}
+          >
+            <Video className="w-4 h-4 mr-2" />
+            Telemedicine
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="w-full justify-start"
+            onClick={() => sendChatMessage('Book appointment with doctor')}
+          >
+            <Calendar className="w-4 h-4 mr-2" />
+            Book Appointment
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="w-full justify-start"
+            onClick={() => sendChatMessage('Check my coverage')}
+          >
+            <Shield className="w-4 h-4 mr-2" />
+            Check Coverage
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="w-full justify-start"
+            onClick={() => sendChatMessage('Find doctors near me')}
+          >
+            <MapPin className="w-4 h-4 mr-2" />
             Find Doctors
           </Button>
         </CardContent>
       </Card>
 
-      {/* Health Monitoring */}
+      {/* Health Status */}
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-sm flex items-center">
@@ -133,7 +185,7 @@ const QuickActionPanel = () => {
             variant="outline" 
             size="sm" 
             className="w-full"
-            onClick={() => navigate('/telemedicine')}
+            onClick={() => sendChatMessage('I want a health checkup')}
           >
             <Heart className="w-4 h-4 mr-1" />
             Health Check
@@ -141,56 +193,62 @@ const QuickActionPanel = () => {
         </CardContent>
       </Card>
 
-      {/* Quick Actions */}
+      {/* Recent Activity */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm">Quick Actions</CardTitle>
+          <CardTitle className="text-sm flex items-center">
+            <Clock className="w-4 h-4 mr-2 text-travel-teal" />
+            Recent Chat Topics
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
           <Button 
-            variant="outline" 
+            variant="ghost" 
             size="sm" 
-            className="w-full justify-start"
-            onClick={() => navigate('/telemedicine-booking')}
+            className="w-full justify-start text-xs h-auto p-2"
+            onClick={() => sendChatMessage('Show my previous doctor search')}
           >
-            <Calendar className="w-4 h-4 mr-2" />
-            Book Telemedicine
+            <div className="text-left">
+              <p className="font-medium">Doctor search</p>
+              <p className="text-gray-500">2 hours ago</p>
+            </div>
           </Button>
           <Button 
-            variant="outline" 
+            variant="ghost" 
             size="sm" 
-            className="w-full justify-start"
-            onClick={() => navigate('/booking')}
+            className="w-full justify-start text-xs h-auto p-2"
+            onClick={() => sendChatMessage('Show my policy details again')}
           >
-            <Users className="w-4 h-4 mr-2" />
-            Book Appointment
+            <div className="text-left">
+              <p className="font-medium">Policy details</p>
+              <p className="text-gray-500">Yesterday</p>
+            </div>
           </Button>
           <Button 
-            variant="outline" 
+            variant="ghost" 
             size="sm" 
-            className="w-full justify-start"
-            onClick={() => navigate('/coverage')}
+            className="w-full justify-start text-xs h-auto p-2"
+            onClick={() => sendChatMessage('Check coverage for dental')}
           >
-            <Globe className="w-4 h-4 mr-2" />
-            Check Coverage
+            <div className="text-left">
+              <p className="font-medium">Dental coverage</p>
+              <p className="text-gray-500">3 days ago</p>
+            </div>
           </Button>
         </CardContent>
       </Card>
 
-      {/* Recent Activity */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm">Recent Activity</CardTitle>
+      {/* Chat Tips */}
+      <Card className="bg-blue-50 border-blue-200">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm text-blue-800">💡 Chat Tips</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-2">
-          <div className="text-xs text-gray-600 p-2 bg-gray-100 rounded">
-            Telemedicine call completed - Dr. Sarah Chen
-          </div>
-          <div className="text-xs text-gray-600 p-2 bg-gray-100 rounded">
-            Policy viewed - Coverage details
-          </div>
-          <div className="text-xs text-gray-600 p-2 bg-gray-100 rounded">
-            Doctor search - Paris, France
+        <CardContent>
+          <div className="text-xs text-blue-700 space-y-1">
+            <p>• Say "Emergency" for immediate help</p>
+            <p>• Ask "Find doctors in [city]"</p>
+            <p>• Say "Book telemedicine call"</p>
+            <p>• Ask "What's covered for [condition]"</p>
           </div>
         </CardContent>
       </Card>

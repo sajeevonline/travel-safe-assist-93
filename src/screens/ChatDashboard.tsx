@@ -5,11 +5,13 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import ChatInterface from '@/components/ChatInterface';
 import QuickActionPanel from '@/components/QuickActionPanel';
 import { Button } from '@/components/ui/button';
-import { Globe, Menu, Settings } from 'lucide-react';
+import { Globe, Menu, Settings, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const ChatDashboard = () => {
   const { user, logout } = useAuth();
   const { t } = useLanguage();
+  const navigate = useNavigate();
 
   return (
     <div className="h-screen flex flex-col bg-gray-50">
@@ -17,6 +19,14 @@ const ChatDashboard = () => {
       <header className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => navigate('/dashboard')}
+              className="lg:hidden"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </Button>
             <div className="flex items-center space-x-3">
               <Globe className="w-8 h-8 text-travel-teal" />
               <div>
@@ -27,10 +37,10 @@ const ChatDashboard = () => {
           </div>
           
           <div className="flex items-center space-x-4">
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-gray-600 hidden sm:block">
               Welcome, {user?.name}
             </div>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" className="hidden lg:flex">
               <Settings className="w-4 h-4 mr-2" />
               Settings
             </Button>

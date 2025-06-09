@@ -1,11 +1,17 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Mic, Camera, Paperclip, Phone, MapPin, Heart } from 'lucide-react';
+import { Send, Mic, Camera, Paperclip, Phone, MapPin, Heart, X, Calendar, User, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import VoiceInterface from './VoiceInterface';
+import InlinePolicyView from './InlinePolicyView';
+import InlineProviderSearch from './InlineProviderSearch';
+import InlineBookingWidget from './InlineBookingWidget';
+import InlineTelemedicineWidget from './InlineTelemedicineWidget';
+import InlineCoverageSearch from './InlineCoverageSearch';
 
 interface Message {
   id: string;
@@ -13,7 +19,9 @@ interface Message {
   sender: 'user' | 'ai';
   timestamp: Date;
   actions?: ActionButton[];
-  type?: 'text' | 'location' | 'booking' | 'emergency';
+  type?: 'text' | 'widget' | 'emergency';
+  widget?: 'policy' | 'providers' | 'booking' | 'telemedicine' | 'coverage';
+  widgetData?: any;
 }
 
 interface ActionButton {
@@ -24,24 +32,25 @@ interface ActionButton {
 }
 
 const ChatInterface = () => {
+  const { user } = useAuth();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Hi! I'm your TravelCare AI assistant. I can help you with medical emergencies, find doctors, book appointments, check coverage, and more. How can I assist you today?",
+      text: `Hi ${user?.name}! I'm your TravelCare AI assistant. I can help you with:\n\n🏥 Find doctors and hospitals\n📋 Check your policy coverage\n📞 Book appointments\n💻 Schedule telemedicine calls\n🚨 Emergency assistance\n\nWhat can I help you with today?`,
       sender: 'ai',
       timestamp: new Date(),
       actions: [
-        { label: "Find Nearby Doctors", action: "find_doctors", primary: true },
-        { label: "Emergency Help", action: "emergency" },
-        { label: "Check Coverage", action: "check_coverage" },
-        { label: "Book Telemedicine", action: "telemedicine" }
+        { label: "🔍 Find Doctors", action: "find_doctors", primary: true },
+        { label: "🏥 Emergency Help", action: "emergency" },
+        { label: "📋 View Policy", action: "view_policy" },
+        { label: "💻 Telemedicine", action: "telemedicine" },
+        { label: "🔎 Check Coverage", action: "check_coverage" }
       ]
     }
   ]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -51,14 +60,16 @@ const ChatInterface = () => {
     scrollToBottom();
   }, [messages]);
 
-  const addMessage = (text: string, sender: 'user' | 'ai', actions?: ActionButton[], type?: string) => {
+  const addMessage = (text: string, sender: 'user' | 'ai', actions?: ActionButton[], type?: string, widget?: string, widgetData?: any) => {
     const newMessage: Message = {
       id: Date.now().toString(),
       text,
       sender,
       timestamp: new Date(),
       actions,
-      type: type as any
+      type: type as any,
+      widget: widget as any,
+      widgetData
     };
     setMessages(prev => [...prev, newMessage]);
   };
@@ -71,7 +82,6 @@ const ChatInterface = () => {
     setInputText('');
     setIsTyping(true);
 
-    // Simulate AI processing
     setTimeout(() => {
       handleAIResponse(userMessage);
       setIsTyping(false);
@@ -79,67 +89,89 @@ const ChatInterface = () => {
   };
 
   const handleAIResponse = (userMessage: string) => {
-    if (userMessage.includes('emergency') || userMessage.includes('urgent') || userMessage.includes('help')) {
+    if (userMessage.includes('emergency') || userMessage.includes('urgent') || userMessage.includes('help') || userMessage.includes('911') || userMessage.includes('112')) {
       addMessage(
-        "🚨 I understand this is urgent. I've found emergency contacts near you. Shall I call emergency services or find the nearest hospital?",
+        "🚨 EMERGENCY DETECTED\n\nI'm here to help immediately. What type of emergency assistance do you need?",
         'ai',
         [
-          { label: "Call Emergency (112)", action: "call_emergency", primary: true },
-          { label: "Find Nearest Hospital", action: "find_hospital" },
-          { label: "Start Emergency Chat", action: "emergency_chat" }
+          { label: "🚑 Call Emergency Services", action: "call_emergency", primary: true },
+          { label: "🏥 Find Nearest Hospital", action: "find_emergency_hospital" },
+          { label: "💬 Emergency Chat Support", action: "emergency_chat" },
+          { label: "📍 Share My Location", action: "share_location" }
         ],
         'emergency'
       );
-    } else if (userMessage.includes('doctor') || userMessage.includes('appointment')) {
+    } else if (userMessage.includes('doctor') || userMessage.includes('find') || userMessage.includes('hospital')) {
       addMessage(
-        "I found several doctors available near your location. Here are the best options based on your policy coverage:",
+        "I'll help you find the right medical care. Here are doctors and hospitals near your location:",
         'ai',
         [
-          { label: "Dr. Sarah Chen - Available Now - €45", action: "book_doctor", data: { id: 1, name: "Dr. Sarah Chen" } },
-          { label: "Dr. Michael Ross - In 30 min - €50", action: "book_doctor", data: { id: 2, name: "Dr. Michael Ross" } },
-          { label: "Telemedicine - €25", action: "telemedicine", primary: true }
+          { label: "Close Widget", action: "close_widget" }
         ],
+        'widget',
+        'providers'
+      );
+    } else if (userMessage.includes('policy') || userMessage.includes('coverage details') || userMessage.includes('view policy')) {
+      addMessage(
+        "Here's your complete policy information:",
+        'ai',
+        [
+          { label: "Close Widget", action: "close_widget" }
+        ],
+        'widget',
+        'policy'
+      );
+    } else if (userMessage.includes('telemedicine') || userMessage.includes('video call') || userMessage.includes('virtual')) {
+      addMessage(
+        "Let's set up a telemedicine consultation for you:",
+        'ai',
+        [
+          { label: "Close Widget", action: "close_widget" }
+        ],
+        'widget',
+        'telemedicine'
+      );
+    } else if (userMessage.includes('coverage') || userMessage.includes('covered') || userMessage.includes('check coverage')) {
+      addMessage(
+        "I'll check what's covered under your policy:",
+        'ai',
+        [
+          { label: "Close Widget", action: "close_widget" }
+        ],
+        'widget',
+        'coverage'
+      );
+    } else if (userMessage.includes('book') || userMessage.includes('appointment') || userMessage.includes('schedule')) {
+      addMessage(
+        "I'll help you book an appointment:",
+        'ai',
+        [
+          { label: "Close Widget", action: "close_widget" }
+        ],
+        'widget',
         'booking'
       );
-    } else if (userMessage.includes('telemedicine') || userMessage.includes('video call')) {
+    } else if (userMessage.includes('pain') || userMessage.includes('sick') || userMessage.includes('symptoms') || userMessage.includes('fever')) {
       addMessage(
-        "Perfect! I can connect you with a doctor via video call. Available specialists:",
+        "I'm sorry you're not feeling well. Based on your symptoms, here are your options:\n\n• Immediate telemedicine consultation\n• Find nearby doctors\n• Emergency care if severe",
         'ai',
         [
-          { label: "Dr. Emily Johnson - General Practice - €25", action: "book_telemedicine", data: { id: 1 } },
-          { label: "Dr. James Wilson - Travel Medicine - €35", action: "book_telemedicine", data: { id: 2 } },
-          { label: "Dr. Lisa Zhang - Emergency Care - €40", action: "book_telemedicine", data: { id: 3 } }
-        ]
-      );
-    } else if (userMessage.includes('coverage') || userMessage.includes('policy')) {
-      addMessage(
-        "Your TravelCare policy (TI-2024-001234) is active and covers:\n• Emergency medical care up to €100,000\n• Hospitalization and surgery\n• Prescription medications\n• Telemedicine consultations\n• Medical evacuation if needed",
-        'ai',
-        [
-          { label: "View Full Policy", action: "view_policy" },
-          { label: "Check Specific Coverage", action: "check_specific" }
-        ]
-      );
-    } else if (userMessage.includes('pain') || userMessage.includes('sick') || userMessage.includes('symptoms')) {
-      addMessage(
-        "I'm sorry to hear you're not feeling well. Can you describe your symptoms? I can help find the right care based on what you're experiencing.",
-        'ai',
-        [
-          { label: "Find General Practitioner", action: "find_gp" },
-          { label: "Find Specialist", action: "find_specialist" },
-          { label: "Start Symptom Checker", action: "symptom_checker" },
-          { label: "Emergency Care", action: "emergency", primary: true }
+          { label: "🩺 Quick Telemedicine - €25", action: "quick_telemedicine", primary: true },
+          { label: "🏥 Find Local Doctor", action: "find_doctors" },
+          { label: "🚨 Emergency Care", action: "emergency" },
+          { label: "💊 Check Symptoms", action: "symptom_checker" }
         ]
       );
     } else {
       addMessage(
-        "I can help you with medical care, policy information, booking appointments, or emergency assistance. What would you like to do?",
+        "I'm here to help with all your travel insurance needs. What would you like to do?",
         'ai',
         [
-          { label: "Find Doctors", action: "find_doctors" },
-          { label: "Book Telemedicine", action: "telemedicine" },
-          { label: "Check Coverage", action: "check_coverage" },
-          { label: "Emergency Help", action: "emergency" }
+          { label: "🔍 Find Medical Care", action: "find_doctors" },
+          { label: "💻 Telemedicine Call", action: "telemedicine" },
+          { label: "📋 Check Coverage", action: "check_coverage" },
+          { label: "📞 Book Appointment", action: "booking" },
+          { label: "🆘 Emergency Help", action: "emergency" }
         ]
       );
     }
@@ -148,77 +180,174 @@ const ChatInterface = () => {
   const handleAction = (action: string, data?: any) => {
     switch (action) {
       case 'find_doctors':
-        addMessage("Looking for doctors near you...", 'user');
-        setTimeout(() => {
-          addMessage(
-            "Found 8 doctors within 2km of your location. All accept your TravelCare insurance:",
-            'ai',
-            [
-              { label: "Dr. Anna Schmidt - 0.5km - €45", action: "book_doctor", data: { id: 1 } },
-              { label: "Dr. Carlos Rodriguez - 0.8km - €50", action: "book_doctor", data: { id: 2 } },
-              { label: "Dr. Yuki Tanaka - 1.2km - €55", action: "book_doctor", data: { id: 3 } },
-              { label: "Show All Doctors", action: "show_all_doctors" }
-            ]
-          );
-        }, 1000);
-        break;
-        
-      case 'emergency':
-        navigate('/support');
-        break;
-        
-      case 'telemedicine':
-        navigate('/telemedicine-booking');
-        break;
-        
-      case 'book_doctor':
-        navigate('/booking', { state: { doctor: data } });
-        break;
-        
-      case 'book_telemedicine':
-        navigate('/telemedicine-booking', { state: { doctorId: data.id } });
+        addMessage("I'll help you find doctors and hospitals near you.", 'ai', 
+          [{ label: "Close Widget", action: "close_widget" }], 'widget', 'providers');
         break;
         
       case 'view_policy':
-        navigate('/policy');
+        addMessage("Here's your complete policy information:", 'ai',
+          [{ label: "Close Widget", action: "close_widget" }], 'widget', 'policy');
+        break;
+        
+      case 'telemedicine':
+      case 'quick_telemedicine':
+        addMessage("Let's connect you with a doctor via video call:", 'ai',
+          [{ label: "Close Widget", action: "close_widget" }], 'widget', 'telemedicine');
+        break;
+        
+      case 'booking':
+        addMessage("I'll help you book an appointment:", 'ai',
+          [{ label: "Close Widget", action: "close_widget" }], 'widget', 'booking');
         break;
         
       case 'check_coverage':
-        navigate('/coverage');
+        addMessage("Let me check what's covered under your policy:", 'ai',
+          [{ label: "Close Widget", action: "close_widget" }], 'widget', 'coverage');
+        break;
+
+      case 'emergency':
+        addMessage(
+          "🚨 EMERGENCY ASSISTANCE\n\nI'm connecting you to emergency services. Stay calm.",
+          'ai',
+          [
+            { label: "🚑 Call 112 (EU Emergency)", action: "call_112", primary: true },
+            { label: "📞 Call +1-800-TRAVELCARE", action: "call_support" },
+            { label: "🏥 Nearest Hospital", action: "find_emergency_hospital" },
+            { label: "📍 Share Location with Emergency Services", action: "share_emergency_location" }
+          ],
+          'emergency'
+        );
+        break;
+
+      case 'call_emergency':
+      case 'call_112':
+        window.open('tel:112');
+        addMessage("Calling emergency services (112)...", 'ai');
+        break;
+
+      case 'call_support':
+        window.open('tel:+1-800-TRAVELCARE');
+        addMessage("Calling TravelCare emergency support...", 'ai');
+        break;
+
+      case 'close_widget':
+        // Remove the last widget message
+        setMessages(prev => prev.filter((_, index) => index !== prev.length - 1));
+        addMessage("How else can I assist you today?", 'ai', [
+          { label: "🔍 Find Medical Care", action: "find_doctors" },
+          { label: "💻 Telemedicine", action: "telemedicine" },
+          { label: "📋 Check Coverage", action: "check_coverage" },
+          { label: "📞 Book Appointment", action: "booking" }
+        ]);
         break;
         
       default:
         addMessage(`Executing: ${action}`, 'user');
         setTimeout(() => {
-          addMessage("Action completed! How else can I help you?", 'ai');
+          addMessage("Action completed! What else can I help you with?", 'ai', [
+            { label: "🔍 Find Doctors", action: "find_doctors" },
+            { label: "💻 Telemedicine", action: "telemedicine" },
+            { label: "📋 Check Coverage", action: "check_coverage" }
+          ]);
         }, 1000);
     }
   };
 
+  const handleVoiceInput = (text: string) => {
+    setInputText(text);
+  };
+
+  const renderWidget = (widget: string, data?: any) => {
+    switch (widget) {
+      case 'policy':
+        return <InlinePolicyView />;
+      case 'providers':
+        return <InlineProviderSearch onBook={(doctor) => handleAction('booking', doctor)} />;
+      case 'booking':
+        return <InlineBookingWidget onComplete={() => handleAction('close_widget')} />;
+      case 'telemedicine':
+        return <InlineTelemedicineWidget onConnect={() => handleAction('close_widget')} />;
+      case 'coverage':
+        return <InlineCoverageSearch />;
+      default:
+        return null;
+    }
+  };
+
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-gray-50">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200 p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-travel-teal rounded-full flex items-center justify-center">
+              <Heart className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h2 className="font-semibold text-gray-900">TravelCare AI Assistant</h2>
+              <p className="text-sm text-gray-600">Online • Instant help available</p>
+            </div>
+          </div>
+          <Badge className="bg-green-100 text-green-800">Policy Active</Badge>
+        </div>
+      </div>
+
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((message) => (
           <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[80%] ${message.sender === 'user' ? 'bg-travel-teal text-white' : 'bg-white border'} rounded-lg p-3 shadow-sm`}>
-              <div className="whitespace-pre-wrap text-sm">{message.text}</div>
-              {message.actions && (
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {message.actions.map((action, index) => (
-                    <Button
-                      key={index}
-                      size="sm"
-                      variant={action.primary ? "default" : "outline"}
-                      onClick={() => handleAction(action.action, action.data)}
-                      className="text-xs"
-                    >
-                      {action.label}
-                    </Button>
-                  ))}
+            <div className={`max-w-[85%] ${
+              message.sender === 'user' 
+                ? 'bg-travel-teal text-white' 
+                : message.type === 'emergency' 
+                  ? 'bg-red-50 border border-red-200' 
+                  : 'bg-white border border-gray-200'
+            } rounded-lg shadow-sm overflow-hidden`}>
+              
+              {/* Message Content */}
+              <div className="p-4">
+                <div className={`whitespace-pre-wrap text-sm ${
+                  message.type === 'emergency' ? 'text-red-800' : 
+                  message.sender === 'user' ? 'text-white' : 'text-gray-800'
+                }`}>
+                  {message.text}
+                </div>
+                
+                {/* Action Buttons */}
+                {message.actions && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {message.actions.map((action, index) => (
+                      <Button
+                        key={index}
+                        size="sm"
+                        variant={action.primary ? "default" : "outline"}
+                        onClick={() => handleAction(action.action, action.data)}
+                        className={`text-xs ${
+                          message.type === 'emergency' 
+                            ? action.primary 
+                              ? 'bg-red-600 hover:bg-red-700 text-white'
+                              : 'border-red-300 text-red-700 hover:bg-red-50'
+                            : ''
+                        }`}
+                      >
+                        {action.label}
+                      </Button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Widget Content */}
+              {message.widget && (
+                <div className="border-t border-gray-200 bg-gray-50">
+                  {renderWidget(message.widget, message.widgetData)}
                 </div>
               )}
-              <div className="text-xs text-gray-500 mt-2">
+
+              {/* Timestamp */}
+              <div className={`px-4 pb-2 text-xs ${
+                message.sender === 'user' ? 'text-white/70' : 'text-gray-500'
+              }`}>
                 {message.timestamp.toLocaleTimeString()}
               </div>
             </div>
@@ -227,11 +356,14 @@ const ChatInterface = () => {
         
         {isTyping && (
           <div className="flex justify-start">
-            <div className="bg-white border rounded-lg p-3 shadow-sm">
-              <div className="flex space-x-1">
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+            <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+              <div className="flex items-center space-x-2">
+                <div className="flex space-x-1">
+                  <div className="w-2 h-2 bg-travel-teal rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-travel-teal rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                  <div className="w-2 h-2 bg-travel-teal rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                </div>
+                <span className="text-sm text-gray-600">AI is thinking...</span>
               </div>
             </div>
           </div>
@@ -241,25 +373,63 @@ const ChatInterface = () => {
 
       {/* Input Area */}
       <div className="border-t bg-white p-4">
-        <div className="flex space-x-2">
-          <Button variant="outline" size="sm">
+        <div className="flex items-center space-x-2">
+          <Button variant="outline" size="sm" className="shrink-0">
             <Camera className="w-4 h-4" />
           </Button>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" className="shrink-0">
             <Paperclip className="w-4 h-4" />
           </Button>
           <Input
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-            placeholder="Type your message... (e.g., 'I need a doctor', 'Emergency help', 'Check my coverage')"
+            placeholder="Ask me anything... 'Find a doctor', 'Check coverage', 'Emergency help'"
             className="flex-1"
           />
-          <Button variant="outline" size="sm">
-            <Mic className="w-4 h-4" />
-          </Button>
-          <Button onClick={handleSendMessage} disabled={!inputText.trim()}>
+          <VoiceInterface onVoiceInput={handleVoiceInput} />
+          <Button 
+            onClick={handleSendMessage} 
+            disabled={!inputText.trim()}
+            className="shrink-0 bg-travel-teal hover:bg-travel-teal/90"
+          >
             <Send className="w-4 h-4" />
+          </Button>
+        </div>
+        
+        {/* Quick Suggestions */}
+        <div className="flex space-x-2 mt-2 overflow-x-auto pb-2">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="text-xs whitespace-nowrap"
+            onClick={() => handleAction('emergency')}
+          >
+            🆘 Emergency
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="text-xs whitespace-nowrap"
+            onClick={() => handleAction('find_doctors')}
+          >
+            🔍 Find Doctor
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="text-xs whitespace-nowrap"
+            onClick={() => handleAction('telemedicine')}
+          >
+            💻 Telemedicine
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="text-xs whitespace-nowrap"
+            onClick={() => handleAction('check_coverage')}
+          >
+            📋 Coverage
           </Button>
         </div>
       </div>
