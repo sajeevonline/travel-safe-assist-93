@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -12,7 +13,8 @@ import {
   Pill, 
   HelpCircle,
   Globe,
-  Home
+  Home,
+  MessageSquare
 } from 'lucide-react';
 
 interface LayoutProps {
@@ -26,6 +28,7 @@ const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
 
   const quickActions = [
+    { title: 'AI Chat', icon: MessageSquare, path: '/chat' },
     { title: t('dashboard'), icon: Home, path: '/dashboard' },
     { title: t('viewPolicy'), icon: FileText, path: '/policy' },
     { title: t('searchCoverage'), icon: Search, path: '/coverage' },
@@ -45,8 +48,8 @@ const Layout = ({ children }: LayoutProps) => {
           <div className="flex items-center space-x-3">
             <Globe className="w-8 h-8 text-travel-teal" />
             <div>
-              <h1 className="text-xl font-bold text-gray-900">TravelCare</h1>
-              <p className="text-sm text-gray-600">Medical Insurance</p>
+              <h1 className="text-xl font-bold text-gray-900">TravelCare AI</h1>
+              <p className="text-sm text-gray-600">Intelligent Assistant</p>
             </div>
           </div>
         </div>

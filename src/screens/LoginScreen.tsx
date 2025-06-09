@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
-import { Globe, Shield, Mail, Smartphone, FileText } from 'lucide-react';
+import { Globe, Shield, Mail, Smartphone, FileText, MessageSquare, Zap } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 const LoginScreen = () => {
@@ -33,9 +32,9 @@ const LoginScreen = () => {
       if (success) {
         toast({
           title: "Login Successful",
-          description: "Welcome to your travel insurance dashboard",
+          description: "Welcome to your AI-powered insurance assistant",
         });
-        navigate('/dashboard');
+        navigate('/chat'); // Redirect to new chat interface
       }
     } catch (error) {
       toast({
@@ -74,20 +73,24 @@ const LoginScreen = () => {
           <div className="hidden lg:flex lg:flex-col lg:justify-center lg:text-white">
             <div className="mb-8">
               <Shield className="w-20 h-20 mb-6" />
-              <h1 className="text-5xl font-bold mb-4">TravelCare</h1>
-              <p className="text-xl text-white/90 mb-8">International Medical Insurance</p>
+              <h1 className="text-5xl font-bold mb-4">TravelCare AI</h1>
+              <p className="text-xl text-white/90 mb-8">Your Intelligent Insurance Assistant</p>
               <div className="space-y-4 text-white/80">
                 <div className="flex items-center space-x-3">
+                  <MessageSquare className="w-6 h-6" />
+                  <span>Chat with AI for instant help</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <Zap className="w-6 h-6" />
+                  <span>Smart suggestions & proactive care</span>
+                </div>
+                <div className="flex items-center space-x-3">
                   <Globe className="w-6 h-6" />
-                  <span>Worldwide Coverage</span>
+                  <span>Worldwide Coverage & Support</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Shield className="w-6 h-6" />
-                  <span>24/7 Emergency Support</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <FileText className="w-6 h-6" />
-                  <span>Instant Policy Access</span>
+                  <span>24/7 Emergency Assistance</span>
                 </div>
               </div>
             </div>
@@ -98,8 +101,8 @@ const LoginScreen = () => {
             {/* Mobile Header */}
             <div className="text-center mb-8 lg:hidden">
               <Shield className="w-16 h-16 text-white mx-auto mb-4" />
-              <h1 className="text-3xl font-bold text-white mb-2">TravelCare</h1>
-              <p className="text-white/90 text-sm">International Medical Insurance</p>
+              <h1 className="text-3xl font-bold text-white mb-2">TravelCare AI</h1>
+              <p className="text-white/90 text-sm">Your Intelligent Insurance Assistant</p>
             </div>
 
             {/* Login Form */}
@@ -107,6 +110,9 @@ const LoginScreen = () => {
               <Card className="glass-effect lg:bg-white lg:shadow-xl">
                 <CardHeader>
                   <CardTitle className="text-center text-white lg:text-gray-900">{t('login')}</CardTitle>
+                  <p className="text-center text-sm text-white/80 lg:text-gray-600">
+                    Access your AI-powered insurance assistant
+                  </p>
                 </CardHeader>
                 <CardContent>
                   <Tabs defaultValue="email" className="w-full">
@@ -153,7 +159,7 @@ const LoginScreen = () => {
                         disabled={isLoading}
                         className="w-full bg-white text-travel-teal hover:bg-white/90 lg:bg-travel-teal lg:text-white lg:hover:bg-travel-teal/90"
                       >
-                        {isLoading ? 'Signing in...' : t('login')}
+                        {isLoading ? 'Signing in...' : 'Start AI Chat'}
                       </Button>
                     </TabsContent>
 
@@ -185,7 +191,7 @@ const LoginScreen = () => {
                         disabled={isLoading}
                         className="w-full bg-white text-travel-teal hover:bg-white/90 lg:bg-travel-teal lg:text-white lg:hover:bg-travel-teal/90"
                       >
-                        {isLoading ? 'Verifying...' : 'Verify OTP'}
+                        {isLoading ? 'Verifying...' : 'Start AI Chat'}
                       </Button>
                     </TabsContent>
 
@@ -216,7 +222,7 @@ const LoginScreen = () => {
                         disabled={isLoading}
                         className="w-full bg-white text-travel-teal hover:bg-white/90 lg:bg-travel-teal lg:text-white lg:hover:bg-travel-teal/90"
                       >
-                        {isLoading ? 'Verifying...' : t('login')}
+                        {isLoading ? 'Verifying...' : 'Start AI Chat'}
                       </Button>
                     </TabsContent>
                   </Tabs>

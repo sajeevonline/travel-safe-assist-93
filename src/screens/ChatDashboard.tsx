@@ -1,0 +1,60 @@
+
+import React from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import ChatInterface from '@/components/ChatInterface';
+import QuickActionPanel from '@/components/QuickActionPanel';
+import { Button } from '@/components/ui/button';
+import { Globe, Menu, Settings } from 'lucide-react';
+
+const ChatDashboard = () => {
+  const { user, logout } = useAuth();
+  const { t } = useLanguage();
+
+  return (
+    <div className="h-screen flex flex-col bg-gray-50">
+      {/* Header */}
+      <header className="bg-white border-b border-gray-200 px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
+              <Globe className="w-8 h-8 text-travel-teal" />
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">TravelCare AI</h1>
+                <p className="text-sm text-gray-600">Your intelligent insurance assistant</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex items-center space-x-4">
+            <div className="text-sm text-gray-600">
+              Welcome, {user?.name}
+            </div>
+            <Button variant="outline" size="sm">
+              <Settings className="w-4 h-4 mr-2" />
+              Settings
+            </Button>
+            <Button variant="outline" size="sm" onClick={logout}>
+              {t('logout')}
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Chat Interface */}
+        <div className="flex-1 flex flex-col">
+          <ChatInterface />
+        </div>
+        
+        {/* Quick Action Panel - Desktop Only */}
+        <div className="hidden lg:block">
+          <QuickActionPanel />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ChatDashboard;

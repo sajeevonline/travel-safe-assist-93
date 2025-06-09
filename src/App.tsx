@@ -8,6 +8,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import Layout from "./components/Layout";
 import LoginScreen from "./screens/LoginScreen";
+import ChatDashboard from "./screens/ChatDashboard";
 import Dashboard from "./screens/Dashboard";
 import ViewPolicy from "./screens/ViewPolicy";
 import SearchCoverage from "./screens/SearchCoverage";
@@ -33,6 +34,7 @@ const App = () => (
             <div className="min-h-screen bg-gray-50">
               <Routes>
                 <Route path="/" element={<LoginScreen />} />
+                <Route path="/chat" element={<ChatDashboard />} />
                 <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
                 <Route path="/policy" element={<Layout><ViewPolicy /></Layout>} />
                 <Route path="/coverage" element={<Layout><SearchCoverage /></Layout>} />
